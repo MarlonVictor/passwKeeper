@@ -1,14 +1,15 @@
-import Fastify from 'fastify';
+import express from 'express';
 
 
-async function bootstrap() {
-  const fastify = Fastify()
+const port = process.env.PORT|| 3333
 
-  fastify.get('/passwords', () => {
-    return { password: 'Sem senhas no momento' }
+const app = express()
+app.use(express.json())
+
+app.get('/passwords', (req, res) => {
+  return res.json({
+    password: 'Sem senhas no momento'
   })
+})
 
-  await fastify.listen({ port: 3333 })
-}
-
-bootstrap()
+app.listen(port, () => console.log(`listening on port ${port}`))
