@@ -6,14 +6,36 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Password {
+  id         String   @id @default(cuid())
+  title      String
+  value      String
+  createdAt  DateTime @default(now())
+  userId     String
+  categoryId String
+
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+}
+
+model User {
   id        String   @id @default(cuid())
-  title     String
-  value     String
-  category  String
+  name      String
+  email     String   @unique
+  avatarUrl String?
   createdAt DateTime @default(now())
+
+  passwords Password[]
+}
+
+model Category {
+  id    String @id @default(cuid())
+  title String
+
+  passwords Password[]
 }
