@@ -1,9 +1,9 @@
 import { NativeBaseProvider, StatusBar } from 'native-base';
 import { useFonts, DMSans_400Regular, DMSans_500Medium_Italic, DMSans_700Bold } from '@expo-google-fonts/dm-sans'
 
+import { AuthContextProvider } from './src/contexts/AuthContext';
 import { SignIn } from './src/screens/SignIn';
 import { Loading } from './src/components/Loading';
-
 
 import { THEME } from './src/styles/theme';
 
@@ -13,13 +13,15 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={THEME}>
-      <StatusBar 
-        translucent
-        barStyle='light-content'
-        backgroundColor='transparent'
-      />
+      <AuthContextProvider>
+        <StatusBar 
+          translucent
+          barStyle='light-content'
+          backgroundColor='transparent'
+        />
 
-      {fontsLoaded ? <SignIn /> : <Loading />}
+        {fontsLoaded ? <SignIn /> : <Loading />}
+      </AuthContextProvider>
     </NativeBaseProvider>
   );
 }
