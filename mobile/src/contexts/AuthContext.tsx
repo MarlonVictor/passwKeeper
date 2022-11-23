@@ -1,14 +1,14 @@
-import { createContext, ReactNode } from 'react';
+import { createContext, ReactNode, useState } from 'react';
 
 
 interface UserProps {
-  name: string;
-  avatarUrl: string;
+  username: string;
+  password: string;
 }
 
 export interface AuthContextDataProps {
   user: UserProps;
-  signIn: () => Promise<void>;
+  signIn: (username: string, password: string) => void;
 }
 
 interface AuthContextProviderProps {
@@ -18,18 +18,23 @@ interface AuthContextProviderProps {
 export const AuthContext = createContext({} as AuthContextDataProps)
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const user = {
-    name: 'Marlon',
-    avatarUrl: 'oi'
-  }
+  const [user, setUser] = useState<UserProps>({
+    username: '',
+    password: ''
+  })
 
-  async function signIn() {
-    console.log('SIGNIN')
+  function signIn(username: string, password: string) {
+    if (!username || !password) return
+    
+    setUser({
+      username: username,
+      password: password
+    })
   }
 
   return (
     <AuthContext.Provider value={{ user, signIn }}>
       {children}
-    </AuthContext.Provider>
+    </AuthContext.Provider> 
   )
 }
