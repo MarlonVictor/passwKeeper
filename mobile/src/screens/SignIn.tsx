@@ -13,9 +13,6 @@ export function SignIn() {
   const [userName, setUserName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
-  function aa() {
-    console.warn(userName, password)
-  }
 
   return (
     <Center flex={1} bgColor='gray.900' p={7}>
@@ -30,8 +27,8 @@ export function SignIn() {
       <Input 
         onChangeText={setUserName}
         value={userName}
-        size="lg" 
-        placeholder="User" 
+        size='lg' 
+        placeholder='User' 
         w='full' 
         borderColor='gray.600' 
         marginTop={4} 
@@ -46,8 +43,8 @@ export function SignIn() {
       <Input 
         onChangeText={setPassword}
         value={password}
-        size="lg" 
-        placeholder="*******" 
+        size='lg' 
+        placeholder='*******' 
         w='full' 
         borderColor='gray.600' 
         marginTop={2} 

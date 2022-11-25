@@ -1,12 +1,12 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
+
+import { prisma } from './lib/prisma';
 
 
-const prisma = new PrismaClient()
-
-const port = process.env.PORT|| 3333
+const port = process.env.PORT || 3333
 
 const app = express()
 app.use(express.json())
@@ -38,6 +38,45 @@ app.post('/passwords', async (req, res) => {
   })
 
   return res.status(201).send({ title })
+})
+
+app.get('/me', async (req, res) => {
+  const token = req.rawHeaders[5].replace('Bearer ', '')
+  const user = jwt.verify(token, 'secret')
+
+  if (!user) return
+  
+  return res.json({ user })
+})
+
+app.post('/users', async (req, res) => {
+  const createUserBody = z.object({
+    username: z.string(),
+    password: z.string()
+  })
+
+  const { username, password } = createUserBody.parse(req.body)
+
+  let user = await prisma.user.findUnique({
+    where: {
+      username: username
+    }
+  })
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        username,
+        password
+      }
+    })
+  }
+
+  const token = jwt.sign({
+    username
+  }, 'secret', { expiresIn: '7d' })
+
+  return res.status(201).send({ token }) 
 })
 
 app.listen(port, () => console.log(`listening on port ${port}`))
