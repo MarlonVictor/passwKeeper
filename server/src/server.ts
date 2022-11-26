@@ -12,12 +12,22 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.get('/passwords', async (req, res) => {
-  const passwords = await prisma.password.findMany()
 
-  return res.json({
-    password: passwords
+// PASSWORD ROUTES ====================================================================================
+app.get('/passwords/:categoryId', async (req, res) => {
+  const getPasswordParams = z.object({
+    categoryId: z.string(),
   })
+
+  const { categoryId } = getPasswordParams.parse(req.params)  
+
+  const passwords = await prisma.password.findMany({
+    where: {
+      categoryId,
+    }
+  })
+
+  return res.json({ passwords })
 })
 
 app.post('/passwords', async (req, res) => {
@@ -40,11 +50,13 @@ app.post('/passwords', async (req, res) => {
   return res.status(201).send({ title })
 })
 
+
+// USER ROUTES ========================================================================================
 app.get('/me', async (req, res) => {
   const token = req.rawHeaders[5].replace('Bearer ', '')
   const user = jwt.verify(token, 'secret')
 
-  if (!user) return
+  if (!user) return res.status(500).send()
   
   return res.json({ user })
 })
@@ -78,5 +90,30 @@ app.post('/users', async (req, res) => {
 
   return res.status(201).send({ token }) 
 })
+
+
+// CATEGORY ROUTES ====================================================================================
+app.get('/categories', async (req, res) => {
+  const categories = await prisma.category.findMany()
+
+  return res.json({ categories })
+})
+
+app.post('/category', async (req, res) => {
+  const createCategoryBody = z.object({
+    title: z.string()
+  })
+
+  const { title } = createCategoryBody.parse(req.body)
+  
+  await prisma.category.create({
+    data: {
+      title
+    }
+  })
+
+  return res.status(201).send({ title })
+})
+
 
 app.listen(port, () => console.log(`listening on port ${port}`))
