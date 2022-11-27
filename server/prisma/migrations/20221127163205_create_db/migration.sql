@@ -2,6 +2,8 @@
 CREATE TABLE "Password" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "icon" TEXT,
+    "email" TEXT NOT NULL,
     "value" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,

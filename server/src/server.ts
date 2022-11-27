@@ -33,17 +33,23 @@ app.get('/passwords/:categoryId', async (req, res) => {
 app.post('/passwords', async (req, res) => {
   const createPasswordBody = z.object({
     title: z.string(),
-    value: z.string()
+    email: z.string(),
+    value: z.string(),
+    userId: z.string(),
+    categoryId: z.string(),
+    icon: z.optional(z.string())
   })
 
-  const { title, value } = createPasswordBody.parse(req.body)
+  const { title, email, value, userId, categoryId, icon } = createPasswordBody.parse(req.body)
   
   await prisma.password.create({
     data: {
       title,
+      email,
       value,
-      userId: 'claq1ihvj0000t5qednvcoge9',
-      categoryId: 'claq1iilp0002t5qep391km6p'
+      userId,
+      categoryId,
+      icon: icon || '',
     }
   })
 

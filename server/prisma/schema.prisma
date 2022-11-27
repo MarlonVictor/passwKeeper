@@ -14,6 +14,8 @@ datasource db {
 model Password {
   id         String   @id @default(cuid())
   title      String
+  icon       String?
+  email      String
   value      String
   createdAt  DateTime @default(now())
   userId     String

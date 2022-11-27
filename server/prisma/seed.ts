@@ -26,6 +26,8 @@ async function main() {
   await prisma.password.create({
     data: {
       title: 'Teste',
+      icon: 'https://abs.twimg.com/favicons/twitter.2.ico',
+      email: 'marlon@gmail.com',
       value: 'senha123',
       userId: user.id,
       categoryId: category1.id
@@ -35,6 +37,8 @@ async function main() {
   await prisma.password.create({
     data: {
       title: 'Teste 2',
+      icon: 'https://abs.twimg.com/favicons/twitter.2.ico',
+      email: 'marlon@gmail.com',
       value: 'senha12345',
       userId: user.id,
       categoryId: category2.id
