@@ -12,12 +12,15 @@ datasource db {
 }
 
 model Password {
-  id         String   @id @default(cuid())
-  title      String
-  icon       String?
-  email      String
-  value      String
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  title     String
+  email     String
+  value     String
+  webside   String
+  icon      String?
+  notes     String?
+
   userId     String
   categoryId String
 
@@ -27,9 +30,9 @@ model Password {
 
 model User {
   id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
   username  String   @unique
   password  String
-  createdAt DateTime @default(now())
 
   passwords Password[]
 }

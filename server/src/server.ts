@@ -14,16 +14,34 @@ app.use(cors())
 
 
 // PASSWORD ROUTES ====================================================================================
-app.get('/passwords/:categoryId', async (req, res) => {
-  const getPasswordParams = z.object({
-    categoryId: z.string(),
+app.get('/passwords/:userId', async (req, res) => {
+  const getUserPasswordsParams = z.object({
+    userId: z.string(),
   })
 
-  const { categoryId } = getPasswordParams.parse(req.params)  
+  const { userId } = getUserPasswordsParams.parse(req.params)  
 
   const passwords = await prisma.password.findMany({
     where: {
-      categoryId,
+      userId,
+    }
+  })
+
+  return res.json({ passwords })
+})
+
+app.get('/passwords/:userId/:categoryId', async (req, res) => {
+  const getCategoryPasswordParams = z.object({
+    userId: z.string(),
+    categoryId: z.string(),
+  })
+
+  const { userId, categoryId } = getCategoryPasswordParams.parse(req.params)  
+
+  const passwords = await prisma.password.findMany({
+    where: {
+      userId,
+      categoryId
     }
   })
 
@@ -35,25 +53,45 @@ app.post('/passwords', async (req, res) => {
     title: z.string(),
     email: z.string(),
     value: z.string(),
+    webside: z.string(),
     userId: z.string(),
     categoryId: z.string(),
-    icon: z.optional(z.string())
+    icon: z.optional(z.string()),
+    notes: z.optional(z.string()),
   })
 
-  const { title, email, value, userId, categoryId, icon } = createPasswordBody.parse(req.body)
+  const { title, email, value, webside, userId, categoryId, icon, notes } = createPasswordBody.parse(req.body)
   
   await prisma.password.create({
     data: {
       title,
       email,
       value,
+      webside,
       userId,
       categoryId,
       icon: icon || '',
+      notes: notes || '',
     }
   })
 
   return res.status(201).send({ title })
+})
+
+app.delete('/password/:passwordId', async (req, res) => {
+  const getPasswordParams = z.object({
+    passwordId: z.string(),
+  })
+
+  const { passwordId } = getPasswordParams.parse(req.params)
+
+  await prisma.password.delete({
+    where: {
+      id: passwordId,
+    }
+  })
+
+  return res.status(200).send("Password deleted")
 })
 
 

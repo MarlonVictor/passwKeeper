@@ -26,9 +26,11 @@ async function main() {
   await prisma.password.create({
     data: {
       title: 'Teste',
-      icon: 'https://abs.twimg.com/favicons/twitter.2.ico',
+      icon: 'https://developer.mozilla.org/favicon-48x48.cbbd161b.png',
       email: 'marlon@gmail.com',
       value: 'senha123',
+      webside: 'https://developer.mozilla.org/pt-BR/',
+      notes: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eius voluptate suscipit laudantium repellendus? Aut doloremque repellat autem expedita dolorem odio fugit repudiandae, impedit velit eaque praesentium non numquam officia? Debitis.',
       userId: user.id,
       categoryId: category1.id
     }
@@ -37,9 +39,10 @@ async function main() {
   await prisma.password.create({
     data: {
       title: 'Teste 2',
-      icon: 'https://abs.twimg.com/favicons/twitter.2.ico',
+      icon: 'https://developer.mozilla.org/favicon-48x48.cbbd161b.png',
       email: 'marlon@gmail.com',
       value: 'senha12345',
+      webside: 'https://developer.mozilla.org/pt-BR/',
       userId: user.id,
       categoryId: category2.id
     }
