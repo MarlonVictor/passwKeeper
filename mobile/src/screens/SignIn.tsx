@@ -1,10 +1,11 @@
-import { Center, Text, Icon, Input } from 'native-base';
+import { useState } from 'react';
+import { Center, Text, Icon } from 'native-base';
 import { Feather } from '@expo/vector-icons';
 
 import { useAuth } from '../hooks/useAuth';
 
 import { Button } from '../components/Button';
-import { useState } from 'react';
+import { Input } from '../components/Input';
 
 
 export function SignIn() {
@@ -27,34 +28,16 @@ export function SignIn() {
       <Input 
         onChangeText={setUserName}
         value={userName}
-        size='lg' 
-        placeholder='User' 
-        w='full' 
-        borderColor='gray.600' 
+        placeholder='User'
         marginTop={4} 
-        color='gray.200' 
-        focusOutlineColor='gray.600'
-        _focus={{
-          bg: 'gray.200',
-          color: 'gray.600'
-        }}
       />
 
       <Input 
         onChangeText={setPassword}
         value={password}
-        type="password"
-        size='lg' 
+        type='password'
         placeholder='*******' 
-        w='full' 
-        borderColor='gray.600' 
         marginTop={2} 
-        color='gray.200' 
-        focusOutlineColor='gray.600'
-        _focus={{
-          bg: 'gray.200',
-          color: 'gray.600'
-        }}
       />
 
       <Button 
