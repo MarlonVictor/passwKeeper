@@ -1,12 +1,10 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { SignIn } from "../screens/SignIn";
-import { Passwords } from "../screens/Passwords";
+import { Passwords } from '../screens/Passwords';
+import { New } from '../screens/New';
+
 
 const { Navigator, Screen } = createNativeStackNavigator()
-// const { Navigator, Screen } = createBottomTabNavigator()
-
 
 export function AppRoutes() {
   return (
@@ -14,13 +12,13 @@ export function AppRoutes() {
       headerShown: false,
     }}>
       <Screen
-        name="signIn"
-        component={SignIn}
-      />
-
-      <Screen
-        name="passwords"
+        name='passwords'
         component={Passwords}
+      />
+      
+      <Screen
+        name='new'
+        component={New}
       />
     </Navigator>
   )

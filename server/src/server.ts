@@ -97,7 +97,7 @@ app.delete('/password/:passwordId', async (req, res) => {
 
 // USER ROUTES ========================================================================================
 app.get('/me', async (req, res) => {
-  const token = req.rawHeaders[5].replace('Bearer ', '')
+  const token = req.headers.authorization?.replace('Bearer ', '') || ''
   const user = jwt.verify(token, 'secret')
 
   if (!user) return res.status(500).send()

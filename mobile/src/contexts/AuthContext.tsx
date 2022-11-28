@@ -1,14 +1,12 @@
 import { createContext, ReactNode, useState } from 'react';
 
+import { api } from '../services/api';
 
-interface UserProps {
-  username: string;
-  password: string;
-}
 
 export interface AuthContextDataProps {
-  user: UserProps;
+  user: string;
   signIn: (username: string, password: string) => void;
+  isUserLoading: boolean;
 }
 
 interface AuthContextProviderProps {
@@ -18,22 +16,35 @@ interface AuthContextProviderProps {
 export const AuthContext = createContext({} as AuthContextDataProps)
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [user, setUser] = useState<UserProps>({
-    username: '',
-    password: ''
-  })
+  const [user, setUser] = useState('')
+  const [isUserLoading, setIsUserLoading] = useState(false)
 
-  function signIn(username: string, password: string) {
+  async function signIn(username: string, password: string) {
     if (!username || !password) return
-    
-    setUser({
-      username: username,
-      password: password
-    })
+
+    try {
+      setIsUserLoading(true)
+
+      const tokenResponse = await api.post('/users', {
+        username,
+        password
+      })
+
+      api.defaults.headers.common['Authorization'] = `Bearer ${tokenResponse.data.token}`
+
+      const userResponse = await api.get('/me')
+      setUser(userResponse.data.user.username)
+
+    } catch(err) {
+      console.error(err)
+
+    } finally {
+      setIsUserLoading(false)
+    }
   }
 
   return (
-    <AuthContext.Provider value={{ user, signIn }}>
+    <AuthContext.Provider value={{ user, signIn, isUserLoading }}>
       {children}
     </AuthContext.Provider> 
   )

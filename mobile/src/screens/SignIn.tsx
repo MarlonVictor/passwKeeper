@@ -1,6 +1,5 @@
 import { Center, Text, Icon, Input } from 'native-base';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '../hooks/useAuth';
 
@@ -9,12 +8,10 @@ import { useState } from 'react';
 
 
 export function SignIn() {
-  const { user, signIn } = useAuth()
+  const { user, signIn, isUserLoading } = useAuth()
 
-  const [userName, setUserName] = useState<string>('')
+  const [userName, setUserName] = useState<string>('MarlonVictor')
   const [password, setPassword] = useState<string>('')
-
-  const navigation = useNavigation();
 
 
   return (
@@ -46,6 +43,7 @@ export function SignIn() {
       <Input 
         onChangeText={setPassword}
         value={password}
+        type="password"
         size='lg' 
         placeholder='*******' 
         w='full' 
@@ -63,14 +61,12 @@ export function SignIn() {
         mt={10}
         title='ENTRAR' 
         rightIcon={<Icon as={Feather} name='log-in' color='gray.600' size='sm' />}
-        // onPress={() => signIn(userName, password)}
-        onPress={() => {
-          navigation.navigate('passwords')
-        }}
+        onPress={() => signIn(userName, password)}
+        isLoading={isUserLoading}
       />
 
       <Text fontSize={12} color='gray.200' textAlign='center' opacity={80} mt={4}>
-        Não utilizamos nenhuma informação além do seu e-mail {'\n'} para criação de sua conta. {user.username}
+        Não utilizamos nenhuma informação além do seu e-mail {'\n'} para criação de sua conta. {user}
       </Text>
     </Center>
   )
