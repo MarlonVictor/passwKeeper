@@ -1,5 +1,6 @@
 import { Center, Text, Icon, Input } from 'native-base';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '../hooks/useAuth';
 
@@ -12,6 +13,8 @@ export function SignIn() {
 
   const [userName, setUserName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+
+  const navigation = useNavigation();
 
 
   return (
@@ -60,7 +63,10 @@ export function SignIn() {
         mt={10}
         title='ENTRAR' 
         rightIcon={<Icon as={Feather} name='log-in' color='gray.600' size='sm' />}
-        onPress={() => signIn(userName, password)}
+        // onPress={() => signIn(userName, password)}
+        onPress={() => {
+          navigation.navigate('passwords')
+        }}
       />
 
       <Text fontSize={12} color='gray.200' textAlign='center' opacity={80} mt={4}>
