@@ -4,31 +4,46 @@ import { Center, Text, FlatList, Pressable, useToast } from 'native-base';
 
 import { Button } from '../components/Button';
 import { Loading } from '../components/Loading';
+import { PasswordItem, PasswordProps } from '../components/PasswordItem';
 
 import { api } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 
 
-interface CategoriesProps {
+interface CategoryProps {
   id: string;
   title: string
 }
 
 export function Passwords() {
   const { navigate } = useNavigation()
+  const { user } = useAuth()
 
   const [isLoading, setIsLoading] = useState(true)
-  const [categories, setCategories] = useState<CategoriesProps[]>([])
+  const [categories, setCategories] = useState<CategoryProps[]>([])
+  const [passwords, setPasswords] = useState<PasswordProps[]>([])
 
   const toast = useToast()
 
-  async function fetchCategories() {
+  async function fetchData() {
     try {
-      const { data } = await api.get('/categories')
-      setCategories(data.categories)
+      const categoriesResponse = await api.get('/categories')
+      const categoriesList = categoriesResponse.data.categories
+
+      const passwordsFetchUrl = categoriesList.length
+        ? `/passwords/${user.id}/${categoriesList[0].id}`
+        : `/passwords/${user.id}`
+
+      const passwordsResponse = await api.get(passwordsFetchUrl)
+      const passwordsList = passwordsResponse.data.passwords
+      
+      setCategories(categoriesList)
+      setPasswords(passwordsList)
       
     } catch (err) {
+      console.error(err)
       toast.show({
-        title: 'Erro ao listar categorias',
+        title: 'Erro ao listar os dados',
         placement: 'top',
         bgColor: 'red.800'
       })
@@ -39,7 +54,7 @@ export function Passwords() {
   }
 
   useFocusEffect(useCallback(() => {
-    fetchCategories()
+    fetchData()
   }, []))
 
   
@@ -57,14 +72,25 @@ export function Passwords() {
 
       {isLoading 
         ? <Loading />
-        : <FlatList 
-            data={categories}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => <Text color='gray.200' fontSize={12}>{item.title}</Text>}
-            px={5}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={() => <Pressable onPress={() => navigate('newCategory')}>Sem categorias ainda</Pressable>}
-          />
+        : <>
+            <FlatList 
+              data={categories}
+              keyExtractor={item => item.id}
+              renderItem={({ item }) => <Text color='gray.200' fontSize={12}>{item.title}</Text>}
+              px={5}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={() => <Pressable onPress={() => navigate('newCategory')}>Sem categorias ainda</Pressable>}
+            />
+
+            <FlatList 
+              data={passwords}
+              keyExtractor={item => item.id}
+              renderItem={({ item }) => <PasswordItem data={item} />}
+              px={5}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={() => <Pressable onPress={() => navigate('newPassword')}>Nenhuma senha cadastrada</Pressable>}
+            />
+        </>
       }
     </Center>
   )

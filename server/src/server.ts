@@ -20,6 +20,7 @@ app.get('/passwords/:userId', async (req, res) => {
   })
 
   const { userId } = getUserPasswordsParams.parse(req.params)  
+  console.log(req.user)
 
   const passwords = await prisma.password.findMany({
     where: {
@@ -101,8 +102,19 @@ app.get('/me', async (req, res) => {
   const user = jwt.verify(token, 'secret')
 
   if (!user) return res.status(500).send()
+
+  const user_db = await prisma.user.findUnique({
+    where: {
+      username: user.username
+    }
+  })
   
-  return res.json({ user })
+  return res.json({
+    user: {
+      id: user_db?.id,
+      username: user_db?.username
+    }
+  })
 })
 
 app.post('/users', async (req, res) => {

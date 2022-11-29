@@ -6,13 +6,20 @@ import { useAuth } from '../hooks/useAuth';
 
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
+import { useNavigation } from '@react-navigation/native';
 
 
 export function SignIn() {
-  const { user, signIn, isUserLoading } = useAuth()
+  const { signIn, isUserLoading } = useAuth()
+  const { navigate } = useNavigation()
 
   const [userName, setUserName] = useState<string>('MarlonVictor')
   const [password, setPassword] = useState<string>('')
+
+  function handleSignIn() {
+    signIn(userName, password)
+    navigate('passwords')
+  }
 
 
   return (
@@ -44,12 +51,12 @@ export function SignIn() {
         mt={10}
         title='ENTRAR' 
         rightIcon={<Icon as={Feather} name='log-in' color='gray.600' size='sm' />}
-        onPress={() => signIn(userName, password)}
+        onPress={handleSignIn}
         isLoading={isUserLoading}
       />
 
       <Text fontSize={12} color='gray.200' textAlign='center' opacity={80} mt={4}>
-        Não utilizamos nenhuma informação além do seu e-mail {'\n'} para criação de sua conta. {user}
+        Não utilizamos nenhuma informação além do seu e-mail {'\n'} para criação de sua conta.
       </Text>
     </Center>
   )

@@ -3,8 +3,13 @@ import { createContext, ReactNode, useState } from 'react';
 import { api } from '../services/api';
 
 
+export interface UserProps {
+  id: string;
+  username: string;
+}
+
 export interface AuthContextDataProps {
-  user: string;
+  user: UserProps;
   signIn: (username: string, password: string) => void;
   isUserLoading: boolean;
 }
@@ -16,7 +21,7 @@ interface AuthContextProviderProps {
 export const AuthContext = createContext({} as AuthContextDataProps)
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [user, setUser] = useState('')
+  const [user, setUser] = useState<UserProps>()
   const [isUserLoading, setIsUserLoading] = useState(false)
 
   async function signIn(username: string, password: string) {
@@ -32,8 +37,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
       api.defaults.headers.common['Authorization'] = `Bearer ${tokenResponse.data.token}`
 
-      const userResponse = await api.get('/me')
-      setUser(userResponse.data.user.username)
+      const { data } = await api.get('/me')
+      
+      setUser({
+        id: data.user.id,
+        username: data.user.username
+      })
 
     } catch(err) {
       console.error(err)
