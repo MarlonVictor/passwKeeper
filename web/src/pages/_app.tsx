@@ -1,7 +1,27 @@
-import '../styles/global.css'
 import type { AppProps } from 'next/app'
+import { Toaster } from 'react-hot-toast';
+
+import { AuthContextProvider } from '../contexts/AuthContext'
+
+import '../styles/global.css'
 
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+function App({ Component, pageProps }: AppProps) {
+  return (
+    <AuthContextProvider>
+      <Toaster
+        position='top-right'
+        toastOptions={{
+          style: {
+            background: '#393E46',
+            color: '#EEE',
+          },
+        }}
+      />
+
+      <Component {...pageProps} />
+    </AuthContextProvider>
+  )
 }
+
+export default App

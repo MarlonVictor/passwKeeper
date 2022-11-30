@@ -1,71 +1,74 @@
-import { FormEvent, useState } from 'react';
-import { api } from '../lib/axios';
+import { useState } from 'react';
+import { MdLogin } from 'react-icons/md';
+import { ImSpinner2 } from 'react-icons/im';
+
+import { Label } from '../components/Label';
+import { Input } from '../components/Input';
+import { Button } from '../components/Button';
+
+import { useAuth } from '../hooks/useAuth';
 
 
-export default function Home() {
-  const [passwordTitle, setPasswordTitle] = useState('')
-  const [passwordValue, setPasswordValue] = useState('')
+export default function SignIn() {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-  async function createPassword(ev: FormEvent) {
-    ev.preventDefault()
-
-    try {
-      await api.post('/passwords', {
-        title: passwordTitle,
-        value: passwordValue
-      })
-
-      setPasswordTitle('')
-      setPasswordValue('')
-      
-    } catch (err) {
-      console.error(err, 'Falha ao cadastrar senha!')
-    }
-  }
+  const { signIn, isUserLoading } = useAuth()
 
   return (
-    <div className="text-neutral-light h-screen grid place-content-center">
-      <h1 className="text-3xl font-bold tracking-wide relative after:w-10 after:h-10 after:bg-primary after:absolute after:rounded-full after:-right-14 w-max mx-auto">
+    <div className='text-neutral-light h-screen grid place-content-center'>
+      <h1 className='text-3xl font-bold tracking-wide relative after:w-10 after:h-10 after:bg-primary after:absolute after:rounded-full after:-right-14 w-max mx-auto'>
         PasswKeeper
       </h1>
 
-      <p className="text-xs opacity-80 text-center pl-8">
-        Projeto em construção 🚧
+      <p className='text-xs opacity-80 text-center pt-4'>
+        Caso não tenha uma conta, criaremos com os dados <br/>
+        imputados abaixo 🔒
       </p>
 
-      <form onSubmit={createPassword} className="w-full max-w-lg mt-32">
-        <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full md:w-1/2 mb-12">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-              Conta
-            </label>
-            <input 
-              className="appearance-none block w-full bg-neutral text-gray-700 rounded py-8 px-6 leading-tight text-neutral-light focus:outline-none focus:bg-neutral-light focus:text-neutral transition-colors" 
-              id="title" 
-              type="text" 
-              placeholder="Github" 
-              value={passwordTitle}
-              onChange={ev => setPasswordTitle(ev.target.value)}
+      <form className='w-[25rem] mt-32'>
+        <div className='flex flex-col -mx-3 mb-12'>
+          <div className='w-full md:w-1/2 mb-14'>
+            <Label text='Login' inputId='username' />
+            <Input 
+              id='username' 
+              type='text' 
+              placeholder='Username' 
+              value={username}
+              onChange={ev => setUsername(ev.target.value)}
+              inputStyle='default'
             />
           </div>
-          <div className="w-full md:w-1/2">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-              Senha
-            </label>
-            <input 
-              className="appearance-none block w-full bg-neutral text-gray-700 rounded py-8 px-6 leading-tight text-neutral-light focus:outline-none focus:bg-neutral-light focus:text-neutral transition-colors" 
-              id="value" 
-              type="text" 
-              placeholder="********" 
-              value={passwordValue}
-              onChange={ev => setPasswordValue(ev.target.value)}
+
+          <div className='w-full md:w-1/2'>
+            <Label text='Senha' inputId='value' />
+            <Input 
+              id='value' 
+              type='text' 
+              placeholder='********' 
+              value={password}
+              onChange={ev => setPassword(ev.target.value)}
+              inputStyle='default'
             />
           </div>
         </div>
 
-        <button type="submit" className="w-full py-6 mt-6 bg-primary rounded-sm text-neutral font-medium transition-all hover:brightness-95">
-          Salvar
-        </button>
+        <Button 
+          type='button' 
+          buttonStyle='primary' 
+          additionalClass='w-full'
+          isLoading={isUserLoading}
+          onClick={() => signIn(username, password)}
+        >
+          {isUserLoading
+            ? <ImSpinner2 size={16} className='animate-spin' />
+            : (
+              <>
+                ENTRAR
+                <MdLogin size={16} />
+              </>
+            )}
+        </Button>
       </form>
     </div>
   )

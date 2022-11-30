@@ -40,6 +40,7 @@ module.exports = {
 
       'neutral-dark': '#222831',
       'neutral': '#393E46',
+      'neutral-mid': '#717171',
       'neutral-light': '#EEE',
       'primary': '#FFD369',
     },
@@ -78,6 +79,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: 'DM Sans, sans-serif',
+				inter: 'Inter, sans-serif'
       }
     },
   },
