@@ -5,15 +5,11 @@ import { Center, Text, FlatList, Pressable, useToast } from 'native-base';
 import { Button } from '../components/Button';
 import { Loading } from '../components/Loading';
 import { PasswordItem, PasswordProps } from '../components/PasswordItem';
+import { CategoryItem, CategoryProps } from '../components/CategoryItem';
 
 import { api } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 
-
-interface CategoryProps {
-  id: string;
-  title: string
-}
 
 export function Passwords() {
   const { navigate } = useNavigation()
@@ -76,7 +72,7 @@ export function Passwords() {
             <FlatList 
               data={categories}
               keyExtractor={item => item.id}
-              renderItem={({ item }) => <Text color='gray.200' fontSize={12}>{item.title}</Text>}
+              renderItem={({ item }) => <CategoryItem data={item} />}
               px={5}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={() => <Pressable onPress={() => navigate('newCategory')}>Sem categorias ainda</Pressable>}

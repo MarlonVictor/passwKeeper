@@ -3,9 +3,9 @@ import { Center, Text } from 'native-base';
 
 import { Button } from '../components/Button';
 
-export function New() {
-  const { goBack, navigate } = useNavigation();
 
+export function New() {
+  const { goBack, navigate } = useNavigation()
   
   return (
     <Center flex={1} bgColor='gray.900' p={7}>
@@ -17,6 +17,12 @@ export function New() {
         mt={10}
         title='Back to list' 
         onPress={goBack}
+      />
+
+      <Button 
+        mt={10}
+        title='New Password' 
+        onPress={() => navigate('newPassword')}
       />
 
       <Button 
