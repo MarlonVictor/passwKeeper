@@ -26,7 +26,7 @@ export function Sidebar(sidebarData: SidebarProps) {
     <li 
       onClick={() => sidebarData.setSelectedItem(categoryData.itemName)} 
       className={`
-      flex items-center gap-8 p-8 rounded-md font-medium cursor-pointer transition-all text-sm hover:bg-[rgba(255,255,255,0.05)]
+      flex items-center gap-8 p-8 rounded-md font-medium cursor-pointer transition-all text-sm hover:bg-white-o
       ${categoryData.isSelected ? '!bg-primary text-neutral-dark shadow-md' : 'text-neutral-light'}
     `}>
   
@@ -74,6 +74,7 @@ export function Sidebar(sidebarData: SidebarProps) {
                 isSelected={sidebarData.selectedItem == category.id}
               />
             ))}
+
           </ul>
         </div>
       </div>
