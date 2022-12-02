@@ -62,10 +62,10 @@ export function PasswordList(listData: PasswordListProps) {
   )
 
   return (
-    <section className='flex flex-col px-16 border-r-4 border-black w-[30rem]'>
+    <section className='flex flex-col px-16 border-r-4 border-black w-[30rem] h-screen'>
       <div className='flex gap-20 mt-28'>
         <Input 
-          id='username' 
+          id='search' 
           type='text' 
           placeholder='Search Password' 
           inputStyle='default'
@@ -84,6 +84,7 @@ export function PasswordList(listData: PasswordListProps) {
 
         {passwords.map(password => (
           <PasswordItem 
+            key={password.title}
             title={password.title}
             username={password.username}
             imgUrl={password.imgUrl}

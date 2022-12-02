@@ -10,6 +10,7 @@ interface CategoryItemProps {
 }
 
 interface SidebarProps {
+  sideIsOpen: boolean;
   selectedItem: string;
   setSelectedItem: (item: string) => void;
 }
@@ -41,7 +42,7 @@ export function Sidebar(sidebarData: SidebarProps) {
   )
 
   return (
-    <aside className='flex flex-col justify-between bg-neutral p-16 pt-72 border-r-4 border-black w-[20rem]'>
+    <aside className={`flex flex-col justify-between bg-neutral p-16 pt-72 border-r-4 border-black w-[20rem] z-10 h-screen transition-transform md2:absolute md2:-translate-x-[20rem] ${sidebarData.sideIsOpen && '!translate-x-0'}`}>
 
       <div className='flex flex-col h-full'>
         <ul className='flex flex-col gap-4'>
@@ -60,7 +61,7 @@ export function Sidebar(sidebarData: SidebarProps) {
           />
         </ul>
 
-        <div className="flex flex-col mt-28 gap-10">
+        <div className='flex flex-col mt-28 gap-10'>
           <span className='block font-medium text-neutral-mid text-sm'>Categories</span>
 
           <ul className='flex flex-col gap-4'>
