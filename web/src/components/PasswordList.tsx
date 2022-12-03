@@ -1,3 +1,4 @@
+import { PasswordProps } from '../pages/home';
 import { Button } from './Button';
 import { Input } from './Input';
 
@@ -5,6 +6,7 @@ import { IoMdAdd } from 'react-icons/io';
 
 
 interface PasswordItemProps {
+  id: string;
   title: string;
   username: string;
   imgUrl?: string;
@@ -12,21 +14,15 @@ interface PasswordItemProps {
 }
 
 interface PasswordListProps {
+  passwords: PasswordProps[];
   selectedPassword: string;
   setSelectedPassword: (item: string) => void;
 }
 
 export function PasswordList(listData: PasswordListProps) {
-  const passwords = [
-    { title: 'Youtube', username: 'cmarlonvictor11@gmail.com', imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/YouTube_social_red_square_%282017%29.svg/1024px-YouTube_social_red_square_%282017%29.svg.png' },
-    { title: 'Facebook', username: 'cmarlonvictor@yahoo.com.br', imgUrl: 'https://www.giochiunitiinternational.com/wp-content/uploads/2020/10/facebook-logo-vector-images-icon-sign-and-symbols-facebook-vector-png-600_600.png' },
-    { title: 'Banco Inter', username: 'MarlonCRV' },
-    { title: 'Nike', username: 'cmarlonvictor@yahoo.com.br', imgUrl: 'https://www.nike.com.br/images/meta/open-graph-main-image.jpg' }
-  ]
-
   const PasswordItem = (passwordData: PasswordItemProps) => (
     <li 
-      onClick={() => listData.setSelectedPassword(passwordData.title)} 
+      onClick={() => listData.setSelectedPassword(passwordData.id)} 
       className={`
       flex items-center rounded-md gap-12 p-16 cursor-pointer transition-all hover:bg-white-o
       ${passwordData.isSelected ? '!bg-primary text-black shadow-md' : 'text-neutral-light'}
@@ -62,7 +58,7 @@ export function PasswordList(listData: PasswordListProps) {
   )
 
   return (
-    <section className='flex flex-col px-16 border-r-4 border-black w-[30rem] h-screen'>
+    <section className='flex flex-col px-16 border-r-4 border-black w-[30rem]'>
       <div className='flex gap-20 mt-28'>
         <Input 
           id='search' 
@@ -82,15 +78,19 @@ export function PasswordList(listData: PasswordListProps) {
 
       <ul className='flex flex-col gap-8 mt-28'>
 
-        {passwords.map(password => (
-          <PasswordItem 
-            key={password.title}
-            title={password.title}
-            username={password.username}
-            imgUrl={password.imgUrl}
-            isSelected={listData.selectedPassword == password.title}
-          />
-        ))}
+        {!listData.passwords.length
+          ? <span className='text-neutral-light block mx-auto'>Empty list</span>
+          : listData.passwords.map(password => (
+              <PasswordItem 
+                key={password.id}
+                id={password.id}
+                title={password.title}
+                username={password.email}
+                imgUrl={password.icon}
+                isSelected={listData.selectedPassword == password.id}
+              />
+            ))
+        }       
 
       </ul>
     </section>

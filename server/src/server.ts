@@ -19,8 +19,7 @@ app.get('/passwords/:userId', async (req, res) => {
     userId: z.string(),
   })
 
-  const { userId } = getUserPasswordsParams.parse(req.params)  
-  console.log(req.user)
+  const { userId } = getUserPasswordsParams.parse(req.params)
 
   const passwords = await prisma.password.findMany({
     where: {
@@ -99,7 +98,7 @@ app.delete('/password/:passwordId', async (req, res) => {
 // USER ROUTES ========================================================================================
 app.get('/me', async (req, res) => {
   const token = req.headers.authorization?.replace('Bearer ', '') || ''
-  const user = jwt.verify(token, 'secret')
+  const user = jwt.verify(token, 'secret')  
 
   if (!user) return res.status(500).send()
 
@@ -149,22 +148,36 @@ app.post('/users', async (req, res) => {
 
 
 // CATEGORY ROUTES ====================================================================================
-app.get('/categories', async (req, res) => {
-  const categories = await prisma.category.findMany()
+app.get('/categories/:userId', async (req, res) => {
+  const getCategoryParams = z.object({
+    userId: z.string()
+  })
+
+  const { userId } = getCategoryParams.parse(req.params)  
+
+  const categories = await prisma.category.findMany({
+    where: {
+      userId
+    }
+  })
 
   return res.json({ categories })
 })
 
 app.post('/category', async (req, res) => {
   const createCategoryBody = z.object({
-    title: z.string()
+    title: z.string(),
+    userId: z.string()
   })
 
-  const { title } = createCategoryBody.parse(req.body)
+  const { title, userId } = createCategoryBody.parse(req.body)
+  console.log(title, userId);
+  
   
   await prisma.category.create({
     data: {
-      title
+      title,
+      userId
     }
   })
 

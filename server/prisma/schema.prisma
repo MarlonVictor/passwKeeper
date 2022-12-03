@@ -38,8 +38,9 @@ model User {
 }
 
 model Category {
-  id    String @id @default(cuid())
-  title String
+  id     String @id @default(cuid())
+  title  String
+  userId String
 
   passwords Password[]
 }

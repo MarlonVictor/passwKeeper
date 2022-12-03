@@ -13,13 +13,15 @@ async function main() {
 
   const category1 = await prisma.category.create({
     data: {
-      title: 'Social Media'
+      title: 'Social Media',
+      userId: user.id,
     }
   })
 
   const category2 = await prisma.category.create({
     data: {
-      title: 'Main'
+      title: 'Main',
+      userId: user.id,
     }
   }) 
 

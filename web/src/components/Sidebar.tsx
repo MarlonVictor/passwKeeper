@@ -1,5 +1,6 @@
 import { IoIosList, IoMdTrash, IoMdAdd } from 'react-icons/io';
 import { GiPadlock } from 'react-icons/gi';
+import { CategoryProps } from '../pages/home';
 
 
 interface CategoryItemProps {
@@ -10,19 +11,13 @@ interface CategoryItemProps {
 }
 
 interface SidebarProps {
+  categories: CategoryProps[] | undefined;
   sideIsOpen: boolean;
   selectedItem: string;
   setSelectedItem: (item: string) => void;
 }
 
 export function Sidebar(sidebarData: SidebarProps) {
-  const categories = [
-    { id: '1', title: 'Main' },
-    { id: '2', title: 'Social' },
-    { id: '3', title: 'Bank' },
-    { id: '4', title: 'Shopping' },
-  ]
-
   const CategoryItem = (categoryData: CategoryItemProps) => (
     <li 
       onClick={() => sidebarData.setSelectedItem(categoryData.itemName)} 
@@ -66,15 +61,20 @@ export function Sidebar(sidebarData: SidebarProps) {
 
           <ul className='flex flex-col gap-4'>
 
-            {categories.map(category => (
-              <CategoryItem 
-                key={category.id}
-                title={category.title}
-                type='category'
-                itemName={category.id}
-                isSelected={sidebarData.selectedItem == category.id}
-              />
-            ))}
+            {!sidebarData.categories?.length 
+              ? <span className='text-neutral-light text-sm block mx-auto'>Empty list</span>
+              : sidebarData.categories.map(category => (
+                  <CategoryItem 
+                    key={category.id}
+                    title={category.title}
+                    type='category'
+                    itemName={category.id}
+                    isSelected={sidebarData.selectedItem == category.id}
+                  />
+                ))
+            }
+
+            {}
 
           </ul>
         </div>
