@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
+
+
+.ReactModal__Overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: 20;
+}
+
+.ReactModal__Content {
+  border: 1px solid #393E46 !important;
+  background: #222831 !important;
+  width: max-content;
+  margin: auto;
+  height: max-content;
+}

@@ -29,7 +29,7 @@ export interface PasswordProps {
   categoryId: string;
 }
 
-export default function Homer() {
+export default function Home() {
   const { user } = useAuth()
   const router = useRouter()
 
@@ -84,8 +84,6 @@ export default function Homer() {
   useEffect(() => {
     fetchCategories()
     fetchPasswords()
-    console.log(user);
-    
   }, [])
 
   useEffect(() => handleSetPasswordList(), [selectedItem])
@@ -96,6 +94,7 @@ export default function Homer() {
         categories={categories}
         sideIsOpen={sideIsOpen}
         selectedItem={selectedItem} 
+        updateCategories={fetchCategories}
         setSelectedItem={setSelectedItem}
       />
 
