@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { IoIosMenu } from 'react-icons/io';
 import toast from 'react-hot-toast';
 
@@ -9,12 +10,12 @@ import { Sidebar } from '../components/Sidebar';
 
 import { api } from '../lib/axios';
 import { useAuth } from '../hooks/useAuth';
-import { useRouter } from 'next/router';
 
 
 export interface CategoryProps {
   id: string;
   title: string;
+  userId: string;
 }
 
 export interface PasswordProps {
@@ -106,6 +107,9 @@ export default function Home() {
               passwords={passwordsShown}
               selectedPassword={selectedPassword} 
               setSelectedPassword={setSelectedPassword}
+              categories={categories}
+              updatePasswords={fetchPasswords}
+              setSelectedItem={setSelectedItem}
             />
 
             <PasswordDetail 

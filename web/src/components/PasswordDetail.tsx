@@ -188,7 +188,7 @@ export function PasswordDetail(data: PasswordDetailProps) {
                 id='notes' 
                 readOnly
                 className='ml-2 h-160 leading-[140%] bottom-0 bg-transparent text-neutral-light pointer-events-none resize-none overflow-hidden'
-                value='Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rerum delectus fuga cupiditate sapiente repellendus, cumque aspernatur, sint assumenda voluptatem tempore repudiandae accusantium? Possimus eum architecto praesentium similique molestiae dolorum eveniet. Lorem ipsum dolor.'
+                value={notes}
                 onChange={e => setNotes(e.target.value)}
               />
             </li>

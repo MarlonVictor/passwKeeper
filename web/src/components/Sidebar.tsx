@@ -57,7 +57,7 @@ export function Sidebar(sidebarData: SidebarProps) {
 
     } finally {
       setNewCategoryLoading(false)
-      setModalIsOpen(false)
+      handleCloseModal()
     }
   }
 
@@ -67,11 +67,11 @@ export function Sidebar(sidebarData: SidebarProps) {
   }
 
   useEffect(() => {
-    const modalOverlay = document.querySelector('.ReactModalPortal')
+    const modalOverlay = document.querySelectorAll('.ReactModalPortal')
 
-    modalOverlay?.addEventListener('click', (ev: any) => 
+    modalOverlay?.forEach(modal => modal.addEventListener('click', (ev: any) => 
       ev.target.classList.contains('ReactModal__Overlay') && handleCloseModal()
-    )
+    ))
   }, [])
 
   const CategoryItem = (categoryData: CategoryItemProps) => (

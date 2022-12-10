@@ -28,7 +28,7 @@ export default function SignIn() {
 
       <form className='w-[25rem] mt-32'>
         <div className='flex flex-col -mx-3 mb-12'>
-          <div className='w-full md:w-1/2 mb-14'>
+          <div className='w-full mb-14'>
             <Label text='Login' inputId='username' />
             <Input 
               id='username' 
@@ -40,7 +40,7 @@ export default function SignIn() {
             />
           </div>
 
-          <div className='w-full md:w-1/2'>
+          <div className='w-full'>
             <Label text='Senha' inputId='value' />
             <Input 
               id='value' 
