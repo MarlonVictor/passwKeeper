@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IoIosList, IoMdTrash, IoMdAdd } from 'react-icons/io';
+import { IoIosList, IoMdAdd } from 'react-icons/io';
 import { GiPadlock } from 'react-icons/gi';
 import toast from 'react-hot-toast';
 
@@ -84,7 +84,6 @@ export function Sidebar(sidebarData: SidebarProps) {
   
       {categoryData.type === 'home' && <GiPadlock size={20} className={`${categoryData.isSelected ? 'text-neutral-dark' : 'text-primary'}`} />}
       {categoryData.type === 'category' && <IoIosList size={20} />}
-      {categoryData.type === 'trash' && <IoMdTrash size={20} className={`${categoryData.isSelected ? 'text-neutral-dark' : 'text-[#f02560]'}`} />}
       {categoryData.type === 'add' && <IoMdAdd size={20} className='brightness-75' />}
       
       {categoryData.title}
@@ -103,13 +102,6 @@ export function Sidebar(sidebarData: SidebarProps) {
               type='home'
               itemName='home'
               isSelected={sidebarData.selectedItem == 'home'} 
-            />
-
-            <CategoryItem 
-              title='Trash' 
-              type='trash'
-              itemName='trash'
-              isSelected={sidebarData.selectedItem == 'trash'}  
             />
           </ul>
 

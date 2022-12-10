@@ -26,9 +26,11 @@ interface PasswordListProps {
   passwords: PasswordProps[];
   categories: CategoryProps[] | [];
   selectedPassword: string;
+  searchText: string;
   updatePasswords: () => void;
   setSelectedItem: (item: string) => void;
   setSelectedPassword: (item: string) => void;
+  setSearchText: (item: string) => void;
 }
 
 interface CategoryListProps {
@@ -177,6 +179,10 @@ export function PasswordList(listData: PasswordListProps) {
             type='text' 
             placeholder='Search Password' 
             inputStyle='default'
+            value={listData.searchText}
+            onChange={(e) => 
+              listData.setSearchText(e.target.value.toLocaleLowerCase())
+            }
           />
 
           <Button 

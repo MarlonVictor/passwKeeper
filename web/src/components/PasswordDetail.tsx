@@ -1,20 +1,24 @@
-import { IoMdTrash, IoIosEye, IoIosEyeOff, IoIosCopy } from 'react-icons/io';
+import { IoMdTrash, IoIosEye, IoIosEyeOff, IoIosCopy, IoMdInformationCircleOutline } from 'react-icons/io';
 import toast from 'react-hot-toast';
 
 import { PasswordProps } from '../pages/home';
 import { Button } from './Button';
 import { Label } from './Label';
 import { useEffect, useState } from 'react';
+import { Modal } from './Modal';
+import { api } from '../lib/axios';
 
 
 interface PasswordDetailProps {
   selectedItem: string;
   selectedPassword: string;
   passwordsShown: PasswordProps[];
+  updatePasswords: () => void;
 }
 
 export function PasswordDetail(data: PasswordDetailProps) {
   const [showPassword, setShowPassword] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const [title, setTitle] = useState('')
   const [imgUrl, setImgUrl] = useState('')
@@ -22,6 +26,7 @@ export function PasswordDetail(data: PasswordDetailProps) {
   const [value, setValue] = useState('')
   const [website, setWebsite] = useState('')
   const [notes, setNotes] = useState('')
+  const [passwordId, setPasswordId] = useState('')
 
   function copyText(inputId: string) {
     const inputEl = document.querySelector(`.password-detail #${inputId}`)
@@ -43,6 +48,7 @@ export function PasswordDetail(data: PasswordDetailProps) {
       setValue(password[0].value)
       setWebsite(password[0].webside)
       setNotes(password[0].notes || '')
+      setPasswordId(password[0].id)
     }
   }
 
@@ -55,7 +61,41 @@ export function PasswordDetail(data: PasswordDetailProps) {
     setNotes('')
   }
 
-  useEffect(() => getPasswordValues(), [data.selectedPassword])
+  async function handleDeletePassword(id: string) {
+    try {
+      await api.delete(`/password/${id}`)
+
+      data.updatePasswords()
+      setTitle('')
+
+    } catch (err) {
+      toast.error('Error to delete password')
+
+    } finally {
+      handleCloseModal()
+    }
+  }
+
+  function handleOpenModal(id: string) {
+    setPasswordId(id)
+    setModalIsOpen(true)
+  }
+
+  function handleCloseModal() {
+    setPasswordId('')
+    setModalIsOpen(false)
+  }
+
+  useEffect(() => {
+    getPasswordValues()
+
+    const modalOverlay = document.querySelectorAll('.ReactModalPortal')
+    modalOverlay?.forEach(modal => modal.addEventListener('click', (ev: any) => 
+      ev.target.classList.contains('ReactModal__Overlay') && handleCloseModal()
+    ))
+
+  }, [data.selectedPassword])
+
   useEffect(() => clearPasswordValues(), [data.selectedItem])
 
   if (!title) {
@@ -69,132 +109,163 @@ export function PasswordDetail(data: PasswordDetailProps) {
   }
 
   return (
-    <section className='flex-1 password-detail'>
-      <div className='w-[40rem] xl:w-[33rem] mx-auto h-screen p-28'>
+    <>
+      <section className='flex-1 password-detail'>
+        <div className='w-[40rem] xl:w-[33rem] mx-auto h-screen p-28'>
 
-        <header className='border-b-2 border-neutral pb-20'>
-          <Button buttonStyle='secondary' additionalClass='text-sm ml-auto'>
-            <IoMdTrash size={18} />
-            Delete
-          </Button>
-
-          <div className='flex items-center gap-28 px-10 py-8 text-neutral-light'>
-            {imgUrl
-              ? (
-                <img 
-                  alt={title}
-                  src={imgUrl}
-                  className='w-64 h-64 bg-neutral-mid rounded-md object-cover'
-                />
-              )
-              : (
-                <span className='w-64 h-64 bg-neutral-mid rounded-md grid place-items-center uppercase text-2xl font-semibold text-neutral-light'>
-                  {title.split('')[0]}
-                </span>
-              )
-            }
-
-            <div className='flex flex-col gap-8'>
-              <strong className='font-semibold text-2xl leading-[100%]'>
-                {title}
-              </strong>
-
-              <span className='text-sm leading-[100%] brightness-75'>
-                Login
-              </span>
-            </div>
-          </div>
-        </header>
-        
-        <ul className='border-b-2 border-neutral py-20'>
-          <li className='group flex items-center justify-between px-10 py-16 hover:bg-white-o transition-colors rounded-md'>
-            <div className='flex flex-col flex-1 gap-2'>
-              <Label text='Username' inputId='username' />
-              <input 
-                type='text' 
-                id='username' 
-                value={email} 
-                onChange={e => setValue(e.target.value)}
-                readOnly
-                className='ml-2 leading-[100%] bottom-0 bg-transparent text-neutral-light pointer-events-none outline-none'
-              />
-            </div>
-
+          <header className='border-b-2 border-neutral pb-20'>
             <Button 
-              buttonStyle='icon' 
-              onClick={() => copyText('username')}
-              additionalClass='opacity-0 group-hover:opacity-100 transition-opacity'
+              buttonStyle='secondary' 
+              additionalClass='text-sm ml-auto'
+              onClick={() => handleOpenModal(passwordId)}
             >
-              <IoIosCopy size={18} />
+              <IoMdTrash size={18} />
+              Delete
             </Button>
-          </li>
 
-          <li className='group flex items-center justify-between px-10 py-16 hover:bg-white-o transition-colors rounded-md'>
-            <div className='flex flex-col flex-1 gap-2'>
-              <Label text='Password' inputId='password' />
-              <input 
-                type={showPassword ? 'text' : 'password'}
-                id='password' 
-                value={value} 
-                onChange={e => setValue(e.target.value)}
-                readOnly
-                className='ml-2 leading-[100%] bottom-0 bg-transparent text-neutral-light pointer-events-none outline-none'
-              />
+            <div className='flex items-center gap-28 px-10 py-8 text-neutral-light'>
+              {imgUrl
+                ? (
+                  <img 
+                    alt={title}
+                    src={imgUrl}
+                    className='w-64 h-64 bg-neutral-mid rounded-md object-cover'
+                  />
+                )
+                : (
+                  <span className='w-64 h-64 bg-neutral-mid rounded-md grid place-items-center uppercase text-2xl font-semibold text-neutral-light'>
+                    {title.split('')[0]}
+                  </span>
+                )
+              }
+
+              <div className='flex flex-col gap-8'>
+                <strong className='font-semibold text-2xl leading-[100%]'>
+                  {title}
+                </strong>
+
+                <span className='text-sm leading-[100%] brightness-75'>
+                  Login
+                </span>
+              </div>
             </div>
+          </header>
+          
+          <ul className='border-b-2 border-neutral py-20'>
+            <li className='group flex items-center justify-between px-10 py-16 hover:bg-white-o transition-colors rounded-md'>
+              <div className='flex flex-col flex-1 gap-2'>
+                <Label text='Username' inputId='username' />
+                <input 
+                  type='text' 
+                  id='username' 
+                  value={email} 
+                  onChange={e => setValue(e.target.value)}
+                  readOnly
+                  className='ml-2 leading-[100%] bottom-0 bg-transparent text-neutral-light pointer-events-none outline-none'
+                />
+              </div>
 
-            <div className='flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity'>
-              <Button buttonStyle='icon' onClick={() => setShowPassword(!showPassword)}>
-                {showPassword 
-                  ? <IoIosEyeOff size={18} />
-                  : <IoIosEye size={18} />
-                }
-              </Button>
-              
-
-              <Button buttonStyle='icon' onClick={() => copyText('password')}>
+              <Button 
+                buttonStyle='icon' 
+                onClick={() => copyText('username')}
+                additionalClass='opacity-0 group-hover:opacity-100 transition-opacity'
+              >
                 <IoIosCopy size={18} />
               </Button>
-            </div>
-          </li>
+            </li>
 
-          <li className='group flex items-center justify-between px-10 py-16 hover:bg-white-o transition-colors rounded-md'>
-            <div className='flex flex-col flex-1 gap-2'>
-              <Label text='Website' inputId='website' />
-              <input 
-                type='text' 
-                id='website' 
-                value={website} 
-                onChange={e => setWebsite(e.target.value)}
-                readOnly
-                className='ml-2 leading-[100%] bottom-0 bg-transparent text-neutral-light pointer-events-none outline-none'
-              />
-            </div>
+            <li className='group flex items-center justify-between px-10 py-16 hover:bg-white-o transition-colors rounded-md'>
+              <div className='flex flex-col flex-1 gap-2'>
+                <Label text='Password' inputId='password' />
+                <input 
+                  type={showPassword ? 'text' : 'password'}
+                  id='password' 
+                  value={value} 
+                  onChange={e => setValue(e.target.value)}
+                  readOnly
+                  className='ml-2 leading-[100%] bottom-0 bg-transparent text-neutral-light pointer-events-none outline-none'
+                />
+              </div>
 
-            <Button 
-              buttonStyle='icon' 
-              onClick={() => copyText('website')}
-              additionalClass='opacity-0 group-hover:opacity-100 transition-opacity'
-            >
-              <IoIosCopy size={18} />
-            </Button>
-          </li>
-        </ul>
+              <div className='flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity'>
+                <Button buttonStyle='icon' onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword 
+                    ? <IoIosEyeOff size={18} />
+                    : <IoIosEye size={18} />
+                  }
+                </Button>
+                
 
-        {notes && (
-          <ul className='py-20'>
-            <li className='group flex flex-col gap-2 px-10 py-16'>
-              <Label text='Notes' inputId='notes' />
-              <textarea 
-                id='notes' 
-                readOnly
-                className='ml-2 h-160 leading-[140%] bottom-0 bg-transparent text-neutral-light pointer-events-none resize-none overflow-hidden'
-                value={notes}
-                onChange={e => setNotes(e.target.value)}
-              />
+                <Button buttonStyle='icon' onClick={() => copyText('password')}>
+                  <IoIosCopy size={18} />
+                </Button>
+              </div>
+            </li>
+
+            <li className='group flex items-center justify-between px-10 py-16 hover:bg-white-o transition-colors rounded-md'>
+              <div className='flex flex-col flex-1 gap-2'>
+                <Label text='Website' inputId='website' />
+                <input 
+                  type='text' 
+                  id='website' 
+                  value={website} 
+                  onChange={e => setWebsite(e.target.value)}
+                  readOnly
+                  className='ml-2 leading-[100%] bottom-0 bg-transparent text-neutral-light pointer-events-none outline-none'
+                />
+              </div>
+
+              <Button 
+                buttonStyle='icon' 
+                onClick={() => copyText('website')}
+                additionalClass='opacity-0 group-hover:opacity-100 transition-opacity'
+              >
+                <IoIosCopy size={18} />
+              </Button>
             </li>
           </ul>
-        )}
-      </div>
-    </section>
+
+          {notes && (
+            <ul className='py-20'>
+              <li className='group flex flex-col gap-2 px-10 py-16'>
+                <Label text='Notes' inputId='notes' />
+                <textarea 
+                  id='notes' 
+                  readOnly
+                  className='ml-2 h-160 leading-[140%] bottom-0 bg-transparent text-neutral-light pointer-events-none resize-none overflow-hidden'
+                  value={notes}
+                  onChange={e => setNotes(e.target.value)}
+                />
+              </li>
+            </ul>
+          )}
+        </div>
+      </section>
+
+      <Modal isOpen={modalIsOpen} title='Delete Confirmation' width='22'>
+        <h2 className="flex items-center gap-16 text-neutral-light">
+          <IoMdInformationCircleOutline size={24} />
+          Do you want to delete this password?
+        </h2>
+
+        <div className='flex gap-8 ml-auto mt-32'>
+          <Button 
+            buttonStyle='secondary' 
+            additionalClass='px-32'
+            onClick={handleCloseModal}
+          >
+            No
+          </Button>
+
+          <Button 
+            buttonStyle='primary' 
+            additionalClass='px-32'
+            onClick={() => handleDeletePassword(passwordId)}
+          >
+            <span>Yes</span>
+          </Button>
+        </div>
+      </Modal>
+    </>
   )
 }

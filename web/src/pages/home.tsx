@@ -36,6 +36,7 @@ export default function Home() {
 
   const [selectedItem, setSelectedItem] = useState('home')
   const [selectedPassword, setSelectedPassword] = useState('')
+  const [searchText, setSearchText] = useState('')
 
   const [sideIsOpen, setSideIsOpen] = useState(true)
 
@@ -70,15 +71,16 @@ export default function Home() {
 
   function handleSetPasswordList() {
     setSelectedPassword('')
+
+    const filterSearchTxt = (arr: any) => arr?.filter((pw: PasswordProps) => pw.title.toLocaleLowerCase().includes(searchText))
     
     if (selectedItem == 'home') {
-      setPasswordsShown(passwords)
-
-    } else if (selectedItem == 'trash') {
-      setPasswordsShown([])
+      setPasswordsShown(filterSearchTxt(passwords))
 
     } else {
-      setPasswordsShown(passwords?.filter(pw => pw.categoryId == selectedItem))
+      const filteredCategory = passwords?.filter(pw => pw.categoryId == selectedItem)
+      const filteredTitle = filterSearchTxt(filteredCategory)
+      setPasswordsShown(filteredTitle)
     }
   }
 
@@ -87,7 +89,7 @@ export default function Home() {
     fetchPasswords()
   }, [])
 
-  useEffect(() => handleSetPasswordList(), [selectedItem])
+  useEffect(() => handleSetPasswordList(), [selectedItem, searchText])
 
   return (
     <main className='flex h-screen'>
@@ -110,12 +112,15 @@ export default function Home() {
               categories={categories}
               updatePasswords={fetchPasswords}
               setSelectedItem={setSelectedItem}
+              searchText={searchText}
+              setSearchText={setSearchText}
             />
 
             <PasswordDetail 
               selectedItem={selectedItem}
               selectedPassword={selectedPassword}
               passwordsShown={passwordsShown}
+              updatePasswords={fetchPasswords}
             />
           </>
         )
